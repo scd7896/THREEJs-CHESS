@@ -1,8 +1,17 @@
-import './style.css'
+import { WebGLRenderer } from "three";
+import "./style.css";
+import ChessSystem from "./system/ChessSystem";
 
-const app = document.querySelector<HTMLDivElement>('#app')!
+class Application {
+  constructor() {
+    this.startSystem();
+  }
 
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+  startSystem() {
+    const chessSyatem = new ChessSystem();
+  }
+}
+
+window.addEventListener("load", () => {
+  new Application();
+});

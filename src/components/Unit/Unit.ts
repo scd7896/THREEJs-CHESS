@@ -1,13 +1,33 @@
-import { Position } from "../../types";
+import { Position, Team, UnitType } from "../../types";
 
 export default abstract class Unit {
-	abstract getCanMovePosition(): Position;
+  private _team: Team;
+  private _type: UnitType;
+  private _position: Position;
 
-	abstract move(position: Position): void;
+  constructor(team: Team, type: UnitType, defaultPosition: Position) {
+    this._team = team;
+    this._type = type;
+    this._position = defaultPosition;
+  }
 
-	abstract remove(): void;
+  public get position() {
+    return this._position;
+  }
 
-	attack(unit: Unit) {
-		unit.remove();
-	}
+  public get team() {
+    return this._team;
+  }
+
+  public get type() {
+    return this._type;
+  }
+
+  attack(unit: Unit) {
+    unit.remove();
+  }
+
+  abstract getCanMovePosition(): Position;
+
+  abstract remove(): void;
 }
