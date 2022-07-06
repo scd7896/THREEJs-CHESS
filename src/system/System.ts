@@ -1,4 +1,5 @@
-import { AmbientLight, DirectionalLight, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { AmbientLight, Clock, DirectionalLight, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 
 export default abstract class System {
   private _scene!: Scene;
@@ -6,6 +7,7 @@ export default abstract class System {
   private _light!: AmbientLight;
   private _container: HTMLElement;
   private _renderer: WebGLRenderer;
+  private _clock: Clock;
 
   constructor() {
     const appContainer = document.querySelector("#app") as HTMLElement;
@@ -24,12 +26,17 @@ export default abstract class System {
 
     window.onresize = this.resize.bind(this);
     this.resize();
+    this._clock = new Clock();
 
     requestAnimationFrame(this.render.bind(this));
   }
 
   get scene() {
     return this._scene;
+  }
+
+  get camera() {
+    return this._camera;
   }
 
   protected resize() {
@@ -44,10 +51,11 @@ export default abstract class System {
 
   protected _setCamera() {
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(7, 7, 0);
+    camera.position.set(0, 40, 40);
     camera.lookAt(0, 0, 0);
     this._camera = camera;
     this._scene.add(camera);
+    new OrbitControls(camera, this._renderer.domElement);
   }
 
   protected _setupLight() {
@@ -62,9 +70,10 @@ export default abstract class System {
     // this._camera.add(light);
   }
 
-  render(time: number) {
+  render() {
+    const time = this._clock.getDelta();
     this._renderer.render(this._scene, this._camera);
-    this.update(time);
+    this.update(time * 1000);
     requestAnimationFrame(this.render.bind(this));
   }
 
