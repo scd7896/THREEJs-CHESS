@@ -1,7 +1,7 @@
-import Pawn from "../components/Unit/Pawn";
-import ChessSystem from "../system/ChessSystem";
-import { IChess } from "../types";
-import { ChessUnitEntity } from "./Entity";
+import Pawn from "../../components/Unit/Pawn";
+import ChessSystem from "../../system/ChessSystem";
+import { IChess } from "../../types";
+import { ChessUnitEntity } from "../Entity";
 
 export default class QueenEntity extends ChessUnitEntity {
   private _unitComponent: Pawn;

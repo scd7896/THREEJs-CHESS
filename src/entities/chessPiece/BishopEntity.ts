@@ -1,8 +1,8 @@
-import ChessSystem from "../system/ChessSystem";
-import { IChess } from "../types";
-import { ChessUnitEntity } from "./Entity";
+import ChessSystem from "../../system/ChessSystem";
+import { IChess } from "../../types";
+import { ChessUnitEntity } from "../Entity";
 
-class RookEntity extends ChessUnitEntity {
+class BishopEntity extends ChessUnitEntity {
   start(): void {
     this.loadUnit();
   }
@@ -15,4 +15,4 @@ class RookEntity extends ChessUnitEntity {
   }
 }
 
-export default RookEntity;
+export default BishopEntity;

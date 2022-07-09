@@ -1,6 +1,6 @@
-import ChessSystem from "../system/ChessSystem";
-import { IChess } from "../types";
-import { ChessUnitEntity } from "./Entity";
+import ChessSystem from "../../system/ChessSystem";
+import { IChess } from "../../types";
+import { ChessUnitEntity } from "../Entity";
 
 class KnightEntity extends ChessUnitEntity {
   start(): void {

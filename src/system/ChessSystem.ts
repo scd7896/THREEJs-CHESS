@@ -1,12 +1,12 @@
-import { AmbientLight, BoxGeometry, Mesh, MeshStandardMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three";
-import BishopEntity from "../entities/BishopEntity";
+import BishopEntity from "../entities/chessPiece/BishopEntity";
 import BoardEntity from "../entities/BoardEntity";
-import Entity from "../entities/Entity";
-import KingEntity from "../entities/KnigEntity";
-import KnightEntity from "../entities/KnightEntity";
-import PawnEntity from "../entities/PawnEntity";
-import QueenEntity from "../entities/QueenEntity";
-import RookEntity from "../entities/RookEntity";
+import CameraEntity from "../entities/CameraEntity";
+import { ChessUnitEntity } from "../entities/Entity";
+import KingEntity from "../entities/chessPiece/KnigEntity";
+import KnightEntity from "../entities/chessPiece/KnightEntity";
+import PawnEntity from "../entities/chessPiece/PawnEntity";
+import QueenEntity from "../entities/chessPiece/QueenEntity";
+import RookEntity from "../entities/chessPiece/RookEntity";
 import { Position } from "../types";
 import { defaultChessUnits } from "../utils/constract";
 
@@ -14,12 +14,18 @@ import System from "./System";
 
 export default class ChessSystem extends System {
   private _boardEntity: BoardEntity;
-  private _chessEntity: Entity<ChessSystem>[];
-  private _tick: number;
+  private _chessEntity: ChessUnitEntity[];
+  private _cameraEntity: CameraEntity;
+  getUnitByPosition(position: Position) {}
+
+  getBoardEntity() {
+    return this._boardEntity;
+  }
 
   constructor() {
     super();
-    this._tick = 0;
+
+    this._cameraEntity = new CameraEntity(this);
     this._boardEntity = new BoardEntity(this);
     this._chessEntity = defaultChessUnits.map(({ team, position, type }) => {
       if (type === "rook") return new RookEntity({ team, type, position }, this);
@@ -35,17 +41,7 @@ export default class ChessSystem extends System {
   update(time: number): void {
     this._boardEntity.update(time);
     this._chessEntity.map((it) => it.update(time));
-
-    // this._tick = (this._tick + time / 10000) % 360;
-    // const cos = Math.cos(this._tick * Math.PI);
-    // console.log(this.camera.position.z);
-    // // 0: 40, 90: 0 180: -40, 270: 0, 360: 40
-    // this.camera.position.set(0, this.camera.position.y, cos * 50);
-    // this.camera.lookAt(0, 0, 0);
-  }
-
-  private _initChessBoard() {
-    this._chessEntity.map((it) => it.start());
+    this._cameraEntity.update(time);
   }
 
   start() {
@@ -54,9 +50,7 @@ export default class ChessSystem extends System {
     this._initChessBoard();
   }
 
-  getUnitByPosition(position: Position) {}
-
-  getBoardEntity() {
-    return this._boardEntity;
+  private _initChessBoard() {
+    this._chessEntity.map((it) => it.start());
   }
 }
