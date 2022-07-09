@@ -1,7 +1,12 @@
 import { AmbientLight, BoxGeometry, Mesh, MeshStandardMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import BishopEntity from "../entities/BishopEntity";
 import BoardEntity from "../entities/BoardEntity";
 import Entity from "../entities/Entity";
+import KingEntity from "../entities/KnigEntity";
+import KnightEntity from "../entities/KnightEntity";
 import PawnEntity from "../entities/PawnEntity";
+import QueenEntity from "../entities/QueenEntity";
+import RookEntity from "../entities/RookEntity";
 import { Position } from "../types";
 import { defaultChessUnits } from "../utils/constract";
 
@@ -16,14 +21,21 @@ export default class ChessSystem extends System {
     super();
     this._tick = 0;
     this._boardEntity = new BoardEntity(this);
-    this._chessEntity = defaultChessUnits
-      .filter(({ type }) => type === "pawn")
-      .map(({ team, position, type }) => new PawnEntity({ team, position, type }, this));
+    this._chessEntity = defaultChessUnits.map(({ team, position, type }) => {
+      if (type === "rook") return new RookEntity({ team, type, position }, this);
+      if (type === "knight") return new KnightEntity({ team, type, position }, this);
+      if (type === "bishop") return new BishopEntity({ team, type, position }, this);
+      if (type === "queen") return new QueenEntity({ team, type, position }, this);
+      if (type === "king") return new KingEntity({ team, type, position }, this);
+      return new PawnEntity({ team, position, type }, this);
+    });
     this.start();
   }
 
   update(time: number): void {
     this._boardEntity.update(time);
+    this._chessEntity.map((it) => it.update(time));
+
     // this._tick = (this._tick + time / 10000) % 360;
     // const cos = Math.cos(this._tick * Math.PI);
     // console.log(this.camera.position.z);
