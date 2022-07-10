@@ -55,7 +55,6 @@ export default abstract class System {
     camera.lookAt(0, 0, 0);
     this._camera = camera;
     this._scene.add(camera);
-    new OrbitControls(camera, this._renderer.domElement);
   }
 
   protected _setupLight() {

@@ -7,6 +7,10 @@ class CameraEntity extends Entity<ChessSystem> {
   private _isRoation: boolean;
   private _turn: Team;
 
+  get turn() {
+    return this._turn;
+  }
+
   start(): void {}
 
   update(time: number): void {

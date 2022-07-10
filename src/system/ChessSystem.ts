@@ -20,15 +20,32 @@ export default class ChessSystem extends System {
   private _raycaster: Raycaster;
   private _pointer: Vector2;
   private _selectedUnit: ChessUnitEntity | null = null;
-
   private _selects: Intersection<Object3D<Event>>[];
 
-  getUnitByPosition(position: Position): ChessUnitEntity | undefined {
-    return this._chessEntity.find((it) => it.position[0] === position[0] && it.position[1] === position[1]);
+  getUnitByPosition(position: Position): ChessUnitEntity[] {
+    return this._chessEntity.filter((it) => it.position[0] === position[0] && it.position[1] === position[1]);
+  }
+
+  finishMove() {
+    this._chessEntity.map((it) => it.unselect());
+    this._pointer = new Vector2();
+    if (this._selectedUnit) {
+      const enemy = this.getUnitByPosition(this._selectedUnit.position).filter(
+        (it) => it.team !== this._cameraEntity.turn,
+      );
+      if (enemy[0]) this._selectedUnit.attack(enemy[0]);
+    }
+
+    this._cameraEntity.changeTurn();
+    this._selectedUnit = null;
   }
 
   getBoardEntity() {
     return this._boardEntity;
+  }
+
+  removeUnitEntity(chessUnit: ChessUnitEntity) {
+    this._chessEntity = this._chessEntity.filter((it) => it !== chessUnit);
   }
 
   constructor() {
@@ -49,7 +66,7 @@ export default class ChessSystem extends System {
     this._raycaster = new Raycaster();
     this._pointer = new Vector2();
     this._selects = [];
-    window.addEventListener("click", (event) => {
+    window.addEventListener("mouseup", (event) => {
       this._pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
       this._pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
@@ -92,22 +109,32 @@ export default class ChessSystem extends System {
   }
 
   private _unitClickCheck() {
-    const [selectUnit] = this._chessEntity.filter((chessIt) => {
+    const units = this._chessEntity.filter((chessIt) => {
       return this._selects.find((it) => chessIt.findChildren(it.object));
     });
+
+    const [selectUnit] = units.filter((it) => it.team === this._cameraEntity.turn);
 
     if (selectUnit) {
       selectUnit?.select();
       this._selectedUnit = selectUnit;
+      console.log(this._selectedUnit);
       return true;
     }
 
-    this._selectedUnit = null;
     return false;
   }
 
   private _boardClickCheck() {
-    console.log(this._selects);
+    if (this._selectedUnit) {
+      const targetMesh = this._boardEntity.canMovePositionsMesh.find((mesh) =>
+        this._selects.find((it) => it.object === mesh),
+      );
+      if (targetMesh) {
+        const [_, row, col] = targetMesh.name.split("/");
+        this._selectedUnit.move([Number(row), Number(col)]);
+      }
+    }
 
     return false;
   }

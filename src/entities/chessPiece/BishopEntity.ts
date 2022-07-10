@@ -1,8 +1,12 @@
+import Pawn from "../../components/Unit/Pawn";
 import ChessSystem from "../../system/ChessSystem";
-import { IChess } from "../../types";
+import { IChess, Position } from "../../types";
 import { ChessUnitEntity } from "../Entity";
 
 class BishopEntity extends ChessUnitEntity {
+  move(position: Position): void {
+    throw new Error("Method not implemented.");
+  }
   select(): void {
     // throw new Error("Method not implemented.");
   }
@@ -16,6 +20,7 @@ class BishopEntity extends ChessUnitEntity {
 
   constructor(chess: IChess, system: ChessSystem) {
     super(chess, system);
+    this._unitComponent = new Pawn(chess.team, chess.position, system);
   }
 }
 

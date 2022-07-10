@@ -8,6 +8,10 @@ export default class BoardEntity extends Entity<ChessSystem> {
   private _canMovePositions: Position[] = [];
   private _canMovePositionsMesh: Mesh[] = [];
 
+  get canMovePositionsMesh() {
+    return this._canMovePositionsMesh;
+  }
+
   constructor(system: ChessSystem) {
     super(system);
   }
