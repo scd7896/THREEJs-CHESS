@@ -1,10 +1,11 @@
-import Pawn from "../../components/Unit/Pawn";
 import ChessSystem from "../../system/ChessSystem";
 import { IChess } from "../../types";
 import { ChessUnitEntity } from "../Entity";
 
 export default class QueenEntity extends ChessUnitEntity {
-  private _unitComponent: Pawn;
+  select(): void {
+    // throw new Error("Method not implemented.");
+  }
 
   start(): void {
     this.loadUnit();
@@ -16,6 +17,5 @@ export default class QueenEntity extends ChessUnitEntity {
 
   constructor(chess: IChess, system: ChessSystem) {
     super(chess, system);
-    this._unitComponent = new Pawn(chess.team, chess.position);
   }
 }

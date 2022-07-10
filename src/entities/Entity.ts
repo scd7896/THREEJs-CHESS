@@ -16,6 +16,14 @@ export default abstract class Entity<T> {
   abstract start(): void;
 
   abstract update(delta: number): void;
+
+  calculateVectorPosition(position: Position) {
+    const oneCellSize = 8;
+    const defaultCell = -28;
+    const [row, col] = position;
+
+    return new Vector3(defaultCell + col * oneCellSize, 0, defaultCell + row * oneCellSize);
+  }
 }
 
 export abstract class ChessUnitEntity extends Entity<ChessSystem> {
@@ -23,17 +31,12 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
   private _type: UnitType;
   private _team: Team;
   private _unit!: GLTF;
-  private _isSelect: boolean = false;
 
   constructor(chess: IChess, system: ChessSystem) {
     super(system);
     this._position = chess.position;
     this._type = chess.type;
     this._team = chess.team;
-  }
-
-  get isSelect() {
-    return this._isSelect;
   }
 
   get position() {
@@ -98,11 +101,10 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
     return new Vector3(defaultCell + col * oneCellSize, 0, defaultCell + row * oneCellSize);
   }
 
-  select() {
-    this._isSelect = true;
-  }
+  abstract select(): void;
 
   unselect() {
-    this._isSelect = false;
+    const boardEntity = this.system.getBoardEntity();
+    boardEntity.setCanMovePositions([]);
   }
 }

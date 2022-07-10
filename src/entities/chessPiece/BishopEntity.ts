@@ -3,6 +3,10 @@ import { IChess } from "../../types";
 import { ChessUnitEntity } from "../Entity";
 
 class BishopEntity extends ChessUnitEntity {
+  select(): void {
+    // throw new Error("Method not implemented.");
+  }
+
   start(): void {
     this.loadUnit();
   }

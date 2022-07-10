@@ -1,3 +1,4 @@
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { AmbientLight, Clock, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 
 export default abstract class System {
@@ -54,11 +55,19 @@ export default abstract class System {
     camera.lookAt(0, 0, 0);
     this._camera = camera;
     this._scene.add(camera);
+    new OrbitControls(camera, this._renderer.domElement);
   }
 
   protected _setupLight() {
     const ambientLight = new AmbientLight(0xffffff, 1);
     this._scene.add(ambientLight);
+
+    // const color = 0xffffff;
+    // const intensity = 1;
+    // const light = new DirectionalLight(color, intensity);
+    // light.position.set(-1, 2, 4);
+    // this._scene.add(light);
+    // this._camera.add(light);
   }
 
   render() {

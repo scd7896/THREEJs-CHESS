@@ -19,10 +19,13 @@ export default class ChessSystem extends System {
   private _cameraEntity: CameraEntity;
   private _raycaster: Raycaster;
   private _pointer: Vector2;
+  private _selectedUnit: ChessUnitEntity | null = null;
 
   private _selects: Intersection<Object3D<Event>>[];
 
-  getUnitByPosition(position: Position) {}
+  getUnitByPosition(position: Position): ChessUnitEntity | undefined {
+    return this._chessEntity.find((it) => it.position[0] === position[0] && it.position[1] === position[1]);
+  }
 
   getBoardEntity() {
     return this._boardEntity;
@@ -77,20 +80,35 @@ export default class ChessSystem extends System {
     for (let i = 0; i < intersects.length; i++) {
       if (this._selects[i]?.object.uuid !== intersects[i].object.uuid) {
         this._selects = intersects;
-        this._findSelectChessUnit();
+        const isUnitClick = this._unitClickCheck();
+        const isMoveClick = this._boardClickCheck();
+
+        if (!isUnitClick && !isMoveClick) {
+          this._chessEntity.map((it) => it.unselect());
+        }
         break;
       }
     }
   }
 
-  private _findSelectChessUnit() {
+  private _unitClickCheck() {
     const [selectUnit] = this._chessEntity.filter((chessIt) => {
       return this._selects.find((it) => chessIt.findChildren(it.object));
     });
+
     if (selectUnit) {
       selectUnit?.select();
-    } else {
-      this._chessEntity.map((it) => it.unselect());
+      this._selectedUnit = selectUnit;
+      return true;
     }
+
+    this._selectedUnit = null;
+    return false;
+  }
+
+  private _boardClickCheck() {
+    console.log(this._selects);
+
+    return false;
   }
 }
