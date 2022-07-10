@@ -22,13 +22,18 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
   private _position: Position;
   private _type: UnitType;
   private _team: Team;
-  private _unit: GLTF;
+  private _unit!: GLTF;
+  private _isSelect: boolean = false;
 
   constructor(chess: IChess, system: ChessSystem) {
     super(system);
     this._position = chess.position;
     this._type = chess.type;
     this._team = chess.team;
+  }
+
+  get isSelect() {
+    return this._isSelect;
   }
 
   get position() {
@@ -51,6 +56,7 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
     const gltfLoader = new GLTFLoader();
     gltfLoader.load(`/gltf/${this.type}.gltf`, (obj) => {
       this._unit = obj;
+      obj.scene.name = obj.scene.uuid;
       obj.scene.scale.set(4, 5, 4);
       const vector3 = this.getVectorByPosition();
       obj.scene.position.set(vector3.x, vector3.y, vector3.z);
@@ -75,11 +81,28 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
     });
   }
 
+  findChildren(node: any) {
+    let tmpNode = node;
+    while (tmpNode) {
+      if (this.unit?.scene.uuid === tmpNode.uuid) return tmpNode;
+      tmpNode = tmpNode.parent;
+    }
+    return null;
+  }
+
   getVectorByPosition() {
     const oneCellSize = 8;
     const defaultCell = -28;
     const [row, col] = this._position;
 
     return new Vector3(defaultCell + col * oneCellSize, 0, defaultCell + row * oneCellSize);
+  }
+
+  select() {
+    this._isSelect = true;
+  }
+
+  unselect() {
+    this._isSelect = false;
   }
 }
