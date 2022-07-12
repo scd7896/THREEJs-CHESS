@@ -33,7 +33,7 @@ class Knight extends Unit {
       if (left >= 0 && left < 8) {
         const row = type === "row" ? base : left;
         const col = type === "row" ? left : base;
-        if (this._getIsMove([row, col])) result.push([row, col]);
+        if (this.getCanIsMove([row, col])) result.push([row, col]);
       }
       if (right >= 0 && right < 8) {
         const row = type === "row" ? base : right;

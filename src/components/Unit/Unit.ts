@@ -92,5 +92,15 @@ export default abstract class Unit {
     }
   }
 
+  getCanIsMove(position: Position) {
+    if (position[0] < 0 || position[0] >= 8) return false;
+    if (position[1] < 0 || position[1] >= 8) return false;
+
+    const unit = this.system.getUnitByPosition(position)[0];
+    if (!unit) return true;
+    if (unit.team === this.team) return false;
+    return true;
+  }
+
   abstract getCanMovePositions(): Position[];
 }

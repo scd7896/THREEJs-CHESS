@@ -11,13 +11,6 @@ class Rook extends Unit {
     return [...this._getPositions("row"), ...this._getPositions("col")];
   }
 
-  private _getCanMove(position: Position) {
-    const unit = this.system.getUnitByPosition(position)[0];
-    if (!unit) return true;
-    if (unit.team === this.team) return false;
-    return true;
-  }
-
   private _getPositions(type: "row" | "col"): Position[] {
     const result: Position[] = [];
     const base = type === "row" ? this.position[0] : this.position[1];
@@ -28,7 +21,7 @@ class Rook extends Unit {
       if (up < 8) {
         const row = type === "row" ? up : this.position[0];
         const col = type === "col" ? up : this.position[1];
-        if (this._getCanMove([row, col])) result.push([row, col]);
+        if (this.getCanIsMove([row, col])) result.push([row, col]);
         const unit = this.system.getUnitByPosition([row, col])[0];
         if (unit) up = 8;
       }
@@ -36,7 +29,7 @@ class Rook extends Unit {
       if (down >= 0) {
         const row = type === "row" ? down : this.position[0];
         const col = type === "col" ? down : this.position[1];
-        if (this._getCanMove([row, col])) result.push([row, col]);
+        if (this.getCanIsMove([row, col])) result.push([row, col]);
         const unit = this.system.getUnitByPosition([row, col])[0];
         if (unit) down = -1;
       }
