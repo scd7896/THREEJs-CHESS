@@ -1,25 +1,12 @@
-import Pawn from "../../components/Unit/Pawn";
+import Rook from "../../components/Unit/Rook";
 import ChessSystem from "../../system/ChessSystem";
-import { IChess, Position } from "../../types";
+import { IChess } from "../../types";
 import { ChessUnitEntity } from "../Entity";
 
 class RookEntity extends ChessUnitEntity {
-  move(position: Position): void {
-    throw new Error("Method not implemented.");
-  }
-  select(): void {
-    // throw new Error("Method not implemented.");
-  }
-  start(): void {
-    this.loadUnit();
-  }
-  update(delta: number): void {
-    // throw new Error("Method not implemented.");
-  }
-
   constructor(chess: IChess, system: ChessSystem) {
     super(chess, system);
-    this._unitComponent = new Pawn(chess.team, chess.position, system);
+    this._unitComponent = new Rook(chess.team, chess.position, system);
   }
 }
 
