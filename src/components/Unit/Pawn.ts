@@ -1,7 +1,5 @@
-import { Vector2 } from "three";
 import ChessSystem from "../../system/ChessSystem";
 import { Position, Team } from "../../types";
-import { angleBetween } from "../../utils/vector";
 import Unit from "./Unit";
 
 class Pawn extends Unit {
@@ -35,10 +33,6 @@ class Pawn extends Unit {
     return [row, col];
   }
 
-  excuteMove() {
-    this._isMove = true;
-  }
-
   getCanMovePositions(): Position[] {
     const result: Position[] = [];
     const oneMovePosition = this._getCanMove(1);
@@ -53,28 +47,12 @@ class Pawn extends Unit {
 
     const attackPositions = this._canAttack();
 
-    console.log(this._getCanMove(1));
-
     return [...result, ...attackPositions];
   }
 
   move(position: Position): void {
     super.move(position);
     this._isMove = true;
-  }
-
-  remove(): void {
-    throw new Error("Method not implemented.");
-  }
-
-  update(delta: number): void {
-    if (this._vector === undefined || this._nextVector === undefined) return;
-
-    const thisVector2 = new Vector2(this._vector.x, this._vector.z);
-    const nextVector2 = new Vector2(this._nextVector.x, this._nextVector.z);
-    const angle = angleBetween(thisVector2, nextVector2);
-    this._vector.setX(this._vector.x + Math.cos(angle) * (delta / 10));
-    this._vector.setZ(this._vector.z + Math.sin(angle) * (delta / 10));
   }
 }
 

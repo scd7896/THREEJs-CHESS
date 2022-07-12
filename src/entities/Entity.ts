@@ -17,14 +17,6 @@ export default abstract class Entity<T> {
   abstract start(): void;
 
   abstract update(delta: number): void;
-
-  calculateVectorPosition(position: Position) {
-    const oneCellSize = 8;
-    const defaultCell = -28;
-    const [row, col] = position;
-
-    return new Vector3(defaultCell + col * oneCellSize, 0, defaultCell + row * oneCellSize);
-  }
 }
 
 export abstract class ChessUnitEntity extends Entity<ChessSystem> {
@@ -33,17 +25,11 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
   private _type: UnitType;
   private _team: Team;
   private _unit!: GLTF;
-  private _movePath: Position[] = [];
-  private _nextPosition: Position | undefined;
 
   constructor(chess: IChess, system: ChessSystem) {
     super(system);
     this._type = chess.type;
     this._team = chess.team;
-  }
-
-  get movePath() {
-    return this._movePath;
   }
 
   get position() {
@@ -60,25 +46,6 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
 
   get unit() {
     return this._unit;
-  }
-
-  get nextMovePath() {
-    return this._nextPosition;
-  }
-
-  pushMovePath(position: Position) {
-    this._movePath.push(position);
-  }
-
-  getNextMovePath() {
-    this._nextPosition = this._movePath.shift();
-    if (this._nextPosition) {
-      this._unitComponent._nextVector = this.calculateVectorPosition(this._nextPosition);
-    }
-    if (this._nextPosition === undefined) {
-      this.system.finishMove();
-      this._unitComponent._nextVector = undefined;
-    }
   }
 
   loadUnit() {
@@ -128,6 +95,7 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
 
     return new Vector3(defaultCell + col * oneCellSize, 0, defaultCell + row * oneCellSize);
   }
+
   unselect() {
     const boardEntity = this.system.getBoardEntity();
     boardEntity.setCanMovePositions([]);
@@ -142,7 +110,23 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
     unit._remove();
   }
 
-  abstract select(): void;
+  select(): void {
+    const positions = this._unitComponent.getCanMovePositions();
+    const board = this.system.getBoardEntity();
+    board.setCanMovePositions(positions);
+  }
 
-  abstract move(position: Position): void;
+  move(position: Position) {
+    this._unitComponent.position = position;
+    this._unitComponent.pushMovePath(position);
+    this._unitComponent.move(position);
+  }
+
+  start(): void {
+    this.loadUnit();
+  }
+
+  update(delta: number): void {
+    this._unitComponent.update(delta);
+  }
 }

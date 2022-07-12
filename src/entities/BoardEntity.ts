@@ -2,6 +2,7 @@ import { Mesh, MeshStandardMaterial, PlaneGeometry, TextureLoader } from "three"
 import { degToRad } from "three/src/math/MathUtils";
 import ChessSystem from "../system/ChessSystem";
 import { Position } from "../types";
+import { calculateVectorPosition } from "../utils/vector";
 import Entity from "./Entity";
 
 export default class BoardEntity extends Entity<ChessSystem> {
@@ -36,7 +37,7 @@ export default class BoardEntity extends Entity<ChessSystem> {
     this._canMovePositions = position;
 
     this._canMovePositionsMesh = this._canMovePositions.map((it) => {
-      const vector = this.calculateVectorPosition(it);
+      const vector = calculateVectorPosition(it);
       const planeGeometry = new PlaneGeometry(7, 7);
 
       const material = new MeshStandardMaterial({
