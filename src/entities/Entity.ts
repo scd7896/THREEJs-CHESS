@@ -48,6 +48,10 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
     return this._unit;
   }
 
+  get unitComponent() {
+    return this._unitComponent;
+  }
+
   loadUnit() {
     const gltfLoader = new GLTFLoader();
     gltfLoader.load(`/gltf/${this.type}.gltf`, (obj) => {
@@ -67,14 +71,8 @@ export abstract class ChessUnitEntity extends Entity<ChessSystem> {
         o.material = material;
       });
 
-      if (this.team === "white") {
-        obj.scene.rotation.y = Math.PI;
-        obj.scene.rotation.x = -(1 / 10) * Math.PI;
-      }
+      if (this.team === "white") obj.scene.rotation.y = Math.PI;
 
-      if (this.team === "black") {
-        obj.scene.rotation.x = (1 / 10) * Math.PI;
-      }
       this.system.scene.add(obj.scene);
     });
   }

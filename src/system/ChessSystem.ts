@@ -7,7 +7,7 @@ import KnightEntity from "../entities/chessPiece/KnightEntity";
 import PawnEntity from "../entities/chessPiece/PawnEntity";
 import QueenEntity from "../entities/chessPiece/QueenEntity";
 import RookEntity from "../entities/chessPiece/RookEntity";
-import { Position } from "../types";
+import { Position, UnitType } from "../types";
 import { defaultChessUnits } from "../utils/constract";
 
 import System from "./System";
@@ -46,6 +46,12 @@ export default class ChessSystem extends System {
 
   removeUnitEntity(chessUnit: ChessUnitEntity) {
     this._chessEntity = this._chessEntity.filter((it) => it !== chessUnit);
+  }
+
+  findUnitByType(_type: UnitType) {
+    const turn = this._cameraEntity.turn;
+    const units = this._chessEntity.filter(({ team }) => team === turn).filter(({ type }) => type === _type);
+    return units;
   }
 
   constructor() {

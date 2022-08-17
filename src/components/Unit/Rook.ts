@@ -3,8 +3,20 @@ import { Position, Team } from "../../types";
 import Unit from "./Unit";
 
 class Rook extends Unit {
+  private _canIsCastling: boolean;
+
   constructor(team: Team, defaultPosition: Position, system: ChessSystem) {
     super(team, "rook", defaultPosition, system);
+    this._canIsCastling = true;
+  }
+
+  public get canIsCastling() {
+    return this._canIsCastling;
+  }
+
+  move(position: Position): void {
+    super.move(position);
+    this._canIsCastling = false;
   }
 
   getCanMovePositions(): Position[] {
