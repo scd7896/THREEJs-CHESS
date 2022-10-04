@@ -22,6 +22,30 @@ export default class ChessSystem extends System {
   private _selectedUnit: ChessUnitEntity | null = null;
   private _selects: Intersection<Object3D<Event>>[];
 
+  constructor() {
+    super();
+
+    this._cameraEntity = new CameraEntity(this);
+    this._boardEntity = new BoardEntity(this);
+    this._chessEntity = defaultChessUnits.map(({ team, position, type }) => {
+      if (type === "rook") return new RookEntity({ team, type, position }, this);
+      if (type === "knight") return new KnightEntity({ team, type, position }, this);
+      if (type === "bishop") return new BishopEntity({ team, type, position }, this);
+      if (type === "queen") return new QueenEntity({ team, type, position }, this);
+      if (type === "king") return new KingEntity({ team, type, position }, this);
+      return new PawnEntity({ team, position, type }, this);
+    });
+    this.start();
+
+    this._raycaster = new Raycaster();
+    this._pointer = new Vector2();
+    this._selects = [];
+    window.addEventListener("mouseup", (event) => {
+      this._pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      this._pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+  }
+
   getUnitByPosition(position: Position): ChessUnitEntity[] {
     return this._chessEntity.filter((it) => it.position[0] === position[0] && it.position[1] === position[1]);
   }
@@ -52,30 +76,6 @@ export default class ChessSystem extends System {
     const turn = this._cameraEntity.turn;
     const units = this._chessEntity.filter(({ team }) => team === turn).filter(({ type }) => type === _type);
     return units;
-  }
-
-  constructor() {
-    super();
-
-    this._cameraEntity = new CameraEntity(this);
-    this._boardEntity = new BoardEntity(this);
-    this._chessEntity = defaultChessUnits.map(({ team, position, type }) => {
-      if (type === "rook") return new RookEntity({ team, type, position }, this);
-      if (type === "knight") return new KnightEntity({ team, type, position }, this);
-      if (type === "bishop") return new BishopEntity({ team, type, position }, this);
-      if (type === "queen") return new QueenEntity({ team, type, position }, this);
-      if (type === "king") return new KingEntity({ team, type, position }, this);
-      return new PawnEntity({ team, position, type }, this);
-    });
-    this.start();
-
-    this._raycaster = new Raycaster();
-    this._pointer = new Vector2();
-    this._selects = [];
-    window.addEventListener("mouseup", (event) => {
-      this._pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-      this._pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
   }
 
   update(time: number): void {
